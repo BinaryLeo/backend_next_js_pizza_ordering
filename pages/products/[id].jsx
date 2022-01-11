@@ -1,29 +1,22 @@
 import styles from '../../styles/Product.module.css'
 import Image from 'Next/image'
 import { useState } from 'react'
-
-const Product = () => {
+import axios from "axios"
+const Product = ({pizza}) => {
   const [SIZE, SETSIZE] = useState(0)
-  const PIZZA = {
-    id: 1,
-    img: '/img/pizza.png',
-    name: 'Campagnola',
-    price: [19.9, 23.9, 27.9],
-    desc:
-      'lorem Ipsum dolor sit amet, consectetur adipiscing elit lorem Ipsum dolor sit amet, consectetur adipiscing elit',
-  }
+  
   return (
     <div className={styles.container}>
       <div className={styles.left}>
         <div className={styles.imgContainer}>
-          <Image src={PIZZA.img} layout="fill" alt="" />
+          <Image src={pizza.img} layout="fill" alt="" />
         </div>
       </div>
 
       <div className={styles.right}>
-          <h1 className={styles.title}>{PIZZA.name}</h1>
-          <span className={styles.price}>${PIZZA.price[SIZE]}</span>
-          <p className={styles.desc}>{PIZZA.desc}</p>
+          <h1 className={styles.title}>{pizza.name}</h1>
+          <span className={styles.price}>${pizza.prices[SIZE]}</span>
+          <p className={styles.desc}>{pizza.desc}</p>
           <h3 className={styles.choose}>Choose the size</h3>
           <div className={styles.sizes}>
             <div className={styles.small} onClick={() => SETSIZE(0)}>
@@ -74,5 +67,12 @@ const Product = () => {
     </div>
   )
 }
-
+export const getServerSideProps = async ({params}) => {
+  const res = await axios.get(`http://localhost:3000/api/products/${params.id}`)
+  return {
+    props: {
+      pizza: res.data,
+    },
+  }
+}
 export default Product
